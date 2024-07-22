@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.coroutines)
     //lifecycleViewModel
     implementation(libs.lifecycle.viewmodel)
+    //recyclerview
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.recyclerview)
     //testImplementation
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

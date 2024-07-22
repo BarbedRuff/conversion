@@ -10,18 +10,6 @@ class UserPreferences(context: Context) {
         sharedPreferences.edit()
     }
 
-    var baseLanguage: String
-        get() = sharedPreferences.getString("Base language", "")!!
-        set(value) {
-            preferencesEditor.putString("Base language", value).apply()
-        }
-
-    var baseTheme: String
-        get() = sharedPreferences.getString("Base theme", "")!!
-        set(value) {
-            preferencesEditor.putString("Base theme", value).apply()
-        }
-
     var basedCode: String
         get() = sharedPreferences.getString("Base code", "USD")!!
         set(value) {
@@ -31,6 +19,6 @@ class UserPreferences(context: Context) {
     var targetCode: String
         get() = sharedPreferences.getString("Target code", "RUB")!!
         set(value) {
-            preferencesEditor.putString("Targte code", value).apply()
+            preferencesEditor.putString("Target code", value).apply()
         }
 }

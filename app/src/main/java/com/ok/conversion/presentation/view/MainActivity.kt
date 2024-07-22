@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.ok.conversion.App
 import com.ok.conversion.databinding.ActivityMainBinding
+import com.ok.conversion.domain.model.CodeUIState
 import com.ok.conversion.domain.model.ExhangeUIState
 import com.ok.conversion.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -25,12 +26,28 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         App.applicationComponent.inject(this)
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.main
         setContentView(view)
 
-        binding.selectBased.text = "From ${App.userPreferences.basedCode}"
-        binding.selectTarget.text = "To ${App.userPreferences.targetCode}"
+        updateButtons()
+
+        binding.selectBased.setOnClickListener {
+            when (val codes = mainViewModel.codes.value) {
+                is CodeUIState.Error -> showException(codes.exception)
+                is CodeUIState.Succes -> startFragment(codes.supportedCodes, true)
+                else -> {}
+            }
+        }
+
+        binding.selectTarget.setOnClickListener {
+            when (val codes = mainViewModel.codes.value) {
+                is CodeUIState.Error -> showException(codes.exception)
+                is CodeUIState.Succes -> startFragment(codes.supportedCodes, false)
+                else -> {}
+            }
+        }
 
         binding.amount.editText?.doOnTextChanged{ inputText, _, _, _ ->
             amount = inputText.toString().toFloatOrNull() ?: 0f
@@ -77,5 +94,16 @@ class MainActivity : AppCompatActivity() {
             it.putExtra("Code", code)
             startActivity(it)
         }
+    }
+
+    private fun startFragment(supportedCodes: List<List<String>>, fromOrTo: Boolean){
+        supportFragmentManager.beginTransaction()
+            .add(Codes.newInstance(supportedCodes, fromOrTo), "")
+            .commit()
+    }
+
+    fun updateButtons(){
+        binding.selectBased.text = "From ${App.userPreferences.basedCode}"
+        binding.selectTarget.text = "To ${App.userPreferences.targetCode}"
     }
 }
