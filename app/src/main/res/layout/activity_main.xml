@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:hint="Set amount"
-        app:layout_constraintBottom_toTopOf="@id/select_from"
+        app:layout_constraintBottom_toTopOf="@id/selectBased"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
@@ -24,7 +24,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/select_from"
+        android:id="@+id/selectBased"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,12 +33,12 @@
         android:text="Select from"
         android:textAlignment="textStart"
         android:textAppearance="?attr/textAppearanceBodyLarge"
-        app:layout_constraintBottom_toBottomOf="@id/select_to"
+        app:layout_constraintBottom_toBottomOf="@id/selectTarget"
         app:layout_constraintTop_toBottomOf="@id/amount"
         app:shapeAppearance="?attr/shapeAppearanceCornerExtraSmall" />
 
     <Button
-        android:id="@+id/select_to"
+        android:id="@+id/selectTarget"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         android:textAlignment="textStart"
         android:textAppearance="?attr/textAppearanceBodyLarge"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/select_from"
+        app:layout_constraintTop_toBottomOf="@id/selectBased"
         app:shapeAppearance="?attr/shapeAppearanceCornerExtraSmall" />
 
     <Button
@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
+        android:enabled="false"
         android:text="Convert"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

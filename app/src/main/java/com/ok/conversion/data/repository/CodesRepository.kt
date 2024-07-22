@@ -3,6 +3,7 @@ package com.ok.conversion.data.repository
 import com.ok.conversion.data.api.ApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.lang.Exception
 import javax.inject.Inject
 
 class CodesRepository @Inject constructor(private val apiService: ApiService) {
@@ -10,9 +11,13 @@ class CodesRepository @Inject constructor(private val apiService: ApiService) {
     var codes = _codes.asStateFlow()
 
     suspend fun getCodes(){
-        val response = apiService.getSupportedCodes()
-        if(response.code() == 200 && response.body()?.result == "success"){
-            _codes.value = response.body()!!.supportedCodes
+        try{
+            val response = apiService.getSupportedCodes()
+            if(response.code() == 200 && response.body()?.result == "success"){
+                _codes.value = response.body()!!.supportedCodes
+            }
+        } catch (e : Exception){
+            _codes.value = listOf()
         }
     }
 }

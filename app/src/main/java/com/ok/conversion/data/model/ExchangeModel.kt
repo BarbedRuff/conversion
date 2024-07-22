@@ -6,5 +6,7 @@ data class Exchange(
     @SerializedName("result")
     val result: String,
     @SerializedName("conversion_result")
-    val conversionResult: Float
+    val conversionResult: Float,
+    @SerializedName("error-type")
+    val errorType : String?
 )
