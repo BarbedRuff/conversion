@@ -1,18 +1,15 @@
 package com.ok.conversion.presentation.view
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.ok.conversion.App
-import com.ok.conversion.R
+import com.ok.conversion.databinding.ActivityMainBinding
 import com.ok.conversion.domain.model.ExhangeUIState
 import com.ok.conversion.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -22,34 +19,25 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mainViewModel: MainViewModel
 
-    lateinit var amountTextView: TextInputLayout
-    lateinit var basedButtonView: Button
-    lateinit var targetButtonView: Button
-    lateinit var convertButtonView: Button
-    lateinit var view: View
-
+    private lateinit var binding: ActivityMainBinding
     private var amount = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.applicationComponent.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.main
+        setContentView(view)
 
-        amountTextView = this.findViewById(R.id.amount)
-        basedButtonView = this.findViewById(R.id.selectBased)
-        targetButtonView = this.findViewById(R.id.selectTarget)
-        convertButtonView = this.findViewById(R.id.convert)
-        view = this.findViewById(R.id.main)
+        binding.selectBased.text = "From ${App.userPreferences.basedCode}"
+        binding.selectTarget.text = "To ${App.userPreferences.targetCode}"
 
-        basedButtonView.text = "From ${App.userPreferences.basedCode}"
-        targetButtonView.text = "To ${App.userPreferences.targetCode}"
-
-        amountTextView.editText?.doOnTextChanged{ inputText, _, _, _ ->
+        binding.amount.editText?.doOnTextChanged{ inputText, _, _, _ ->
             amount = inputText.toString().toFloatOrNull() ?: 0f
-            convertButtonView.isEnabled = inputText!!.isNotEmpty()
+            binding.convert.isEnabled = inputText!!.isNotEmpty()
         }
 
-        convertButtonView.setOnClickListener {
+        binding.convert.setOnClickListener {
             mainViewModel.getExchangeAmount(
                 App.userPreferences.basedCode,
                 App.userPreferences.targetCode,
@@ -62,7 +50,10 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.exchange.collect{ exchange ->
                     when (exchange) {
                         is ExhangeUIState.Error -> showException(exchange.exception)
-                        is ExhangeUIState.Succes -> Log.d("Exhange", exchange.exchange.toString())
+                        is ExhangeUIState.Succes -> startExchangeActivity(
+                            exchange.exchange,
+                            App.userPreferences.targetCode
+                        )
                         else -> {}
                     }
                 }
@@ -70,10 +61,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showException(exception: String){
+    private fun showException(exception: String){
         Snackbar
-            .make(view, exception, Snackbar.LENGTH_SHORT)
+            .make(binding.main, exception, Snackbar.LENGTH_SHORT)
             .setAction("Close"){}
             .show()
+    }
+
+    private fun startExchangeActivity(exchange: Float, code: String){
+        Intent(
+            this,
+            ExchangeActivity::class.java
+        ).also {
+            it.putExtra("Receive", exchange)
+            it.putExtra("Code", code)
+            startActivity(it)
+        }
     }
 }
