@@ -7,16 +7,13 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiService {
-    @GET("{apiKey}/codes")
-    fun getSupportedCodes(
-        @Path("apiKey") apiKey: String
-    ): Response<Codes>
+    @GET("/codes")
+    suspend fun getSupportedCodes(): Response<Codes>
 
-    @GET("{apiKey}/pair/{baseCode}/{targetCode}/{amount}")
-    fun getExchangeAmount(
-        @Path("apiKey") apiKey: String,
+    @GET("/pair/{baseCode}/{targetCode}/{amount}")
+    suspend fun getExchangeAmount(
         @Path("baseCode") baseCode: String,
         @Path("targetCode") targetCode: String,
-        @Path("amount") amount: Int
+        @Path("amount") amount: Float
     ): Response<Exchange>
 }

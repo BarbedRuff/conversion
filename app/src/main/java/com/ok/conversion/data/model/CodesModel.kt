@@ -6,10 +6,5 @@ data class Codes(
     @SerializedName("result")
     val result: String,
     @SerializedName("supported_codes")
-    val supportedCodes: List<Code>
-)
-
-data class Code(
-    val code: String,
-    val description: String
+    val supportedCodes: List<List<String>>
 )
